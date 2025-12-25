@@ -1,0 +1,97 @@
+version: "3.8"
+
+services:
+  nezha-agent:
+    image: whoerau/nezha-agent-v2:latest
+    container_name: nezha-agent
+    restart: unless-stopped
+
+    # 如果需要本地构建，取消下面的注释
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+
+    environment:
+      # Nezha 服务器地址（必填）
+      - NZ_SERVER=your-server-address:port
+
+      # 是否启用 TLS（必填）
+      - NZ_TLS=true
+
+      # 客户端密钥（必填）
+      - NZ_CLIENT_SECRET=your-secret
+
+      # 客户端唯一标识（可选，用于识别和区分不同的 Agent）
+      # - NZ_UUID=
+
+      # 上报延迟（秒）
+      - NZ_REPORT_DELAY=1
+
+      # 跳过连接检查
+      - NZ_SKIP_CONN=false
+
+      # 跳过进程检查
+      - NZ_SKIP_PROCS=false
+
+      # 禁用自动更新
+      - NZ_DISABLE_AUTO_UPDATE=true
+
+      # 禁用强制更新
+      - NZ_DISABLE_FORCE_UPDATE=true
+
+      # 禁用命令执行（安全选项，禁用后无法通过面板执行命令）
+      - NZ_DISABLE_COMMAND_EXECUTE=true
+
+      # 禁用 NAT 穿透
+      - NZ_DISABLE_NAT=false
+
+      # 使用 IPv6
+      - NZ_USE_IPV6=false
+
+      # 启用 GPU 监控
+      - NZ_GPU=false
+
+      # 启用温度监控
+      - NZ_TEMPERATURE=false
+
+      # IP 上报周期（秒）
+      - NZ_IP_REPORT_PERIOD=1800
+
+      # 调试模式
+      - NZ_DEBUG=false
+
+      # 时区设置
+      - TZ=Asia/Shanghai
+
+    # 特权模式，用于获取完整的系统信息
+    # privileged: true
+
+    # 或者使用 cap_add 添加特定权限
+    cap_add:
+      # - SYS_ADMIN
+      - NET_ADMIN
+      - NET_RAW
+
+    # 网络模式，使用 host 模式可以获取更准确的网络信息
+    network_mode: host
+
+    # 挂载主机信息，用于获取系统信息
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
+
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "nezha-agent"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s

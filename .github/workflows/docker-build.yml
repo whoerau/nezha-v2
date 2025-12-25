@@ -1,0 +1,82 @@
+name: Build and Push Docker Image
+
+on:
+  # 每月1号凌晨2点自动构建
+  schedule:
+    - cron: "0 2 1 * *"
+
+  # 推送到 main 分支时触发
+  push:
+    branches:
+      - main
+    paths:
+      - "Dockerfile"
+      - ".github/workflows/docker-build.yml"
+
+  # 允许手动触发
+  workflow_dispatch:
+
+env:
+  # DockerHub 用户名，需要在 GitHub Secrets 中设置 DOCKERHUB_USERNAME
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/nezha-agent-v2
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: 设置 Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 登录到 DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: 提取 Docker 元数据
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_NAME }}
+          tags: |
+            # 设置 latest 标签
+            type=raw,value=latest,enable={{is_default_branch}}
+            # 根据日期生成标签 (YYYYMMDD 格式)
+            type=schedule,pattern={{date 'YYYYMMDD'}}
+            # 根据 git 提交的 SHA 生成标签
+            type=sha,prefix={{date 'YYYYMMDD'}}-
+            # 如果推送了 tag，使用 tag 作为标签
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+
+      - name: 构建并推送 Docker 镜像
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: 生成构建摘要
+        run: |
+          echo "### 🎉 Docker 镜像构建成功！" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**镜像标签:**" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.meta.outputs.tags }}" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**拉取命令:**" >> $GITHUB_STEP_SUMMARY
+          echo '```bash' >> $GITHUB_STEP_SUMMARY
+          echo "docker pull ${{ env.IMAGE_NAME }}:latest" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
