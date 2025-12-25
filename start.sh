@@ -11,15 +11,11 @@ echo "正在启动 Nezha Agent..."
 echo "服务器: $NZ_SERVER"
 echo "TLS: $NZ_TLS"
 
-# 持久化配置文件路径
-CONFIG_FILE="/data/config.yml"
+# 配置文件路径
+CONFIG_FILE="/app/config.yml"
 
-# 只在配置文件不存在时创建（首次启动）
-if [ ! -f "$CONFIG_FILE" ]; then
-  echo "首次启动，创建配置文件..."
-  
-  # 生成配置文件
-  cat > "$CONFIG_FILE" <<EOF
+# 生成配置文件
+cat > "$CONFIG_FILE" <<EOF
 client_secret: ${NZ_CLIENT_SECRET}
 debug: ${NZ_DEBUG:-false}
 disable_auto_update: ${NZ_DISABLE_AUTO_UPDATE:-false}
@@ -39,25 +35,19 @@ tls: ${NZ_TLS:-false}
 use_ipv6_country_code: ${NZ_USE_IPV6:-false}
 EOF
 
-  # 如果指定了 UUID，添加到配置文件
-  if [ -n "$NZ_UUID" ]; then
-    echo "uuid: ${NZ_UUID}" >> "$CONFIG_FILE"
-    echo "使用指定的 UUID: ${NZ_UUID}"
-  else
-    echo "UUID 将由 Agent 自动生成"
-  fi
-  
-  echo "配置文件已创建"
+# 如果指定了 UUID，添加到配置文件
+if [ -n "$NZ_UUID" ]; then
+  echo "uuid: ${NZ_UUID}" >> "$CONFIG_FILE"
+  echo "使用固定的 UUID: ${NZ_UUID}"
 else
-  echo "使用现有配置文件（保留 UUID 和 Agent 生成的设置）"
-  
-  # 读取并显示当前 UUID
-  EXISTING_UUID=$(grep "^uuid:" "$CONFIG_FILE" 2>/dev/null | awk '{print $2}' || echo "未找到")
-  echo "当前 UUID: $EXISTING_UUID"
+  echo "⚠️  未设置 NZ_UUID，Agent 将自动生成 UUID（重启后会变化）"
+  echo "💡 建议：首次运行后查看日志获取 UUID，然后设置 NZ_UUID 环境变量"
 fi
 
-echo "当前配置:"
+echo ""
+echo "配置文件已生成:"
 cat "$CONFIG_FILE"
+echo ""
 
 # 启动 nezha-agent
 exec /opt/nezha/agent/nezha-agent -c "$CONFIG_FILE"

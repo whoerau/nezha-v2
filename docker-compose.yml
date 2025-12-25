@@ -21,8 +21,10 @@ services:
       # 客户端密钥（必填）
       - NZ_CLIENT_SECRET=your-secret
 
-      # 客户端唯一标识（可选，用于识别和区分不同的 Agent）
-      # - NZ_UUID=
+      # 客户端唯一标识（可选）
+      # 如果不设置，Agent 会自动生成（重启后会变化）
+      # 如需固定 UUID，请设置此值
+      # - NZ_UUID=your-fixed-uuid-here
 
       # 上报延迟（秒）
       - NZ_REPORT_DELAY=1
@@ -80,8 +82,6 @@ services:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       - /etc/os-release:/host/etc/os-release:ro
-      # 持久化配置文件（保存 UUID）
-      - ./data:/data
 
     # 日志配置
     logging:

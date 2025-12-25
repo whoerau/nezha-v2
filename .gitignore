@@ -4,9 +4,6 @@
 # Docker 相关
 docker-compose.override.yml
 
-# 持久化数据目录
-data/
-
 # 日志文件
 *.log
 
