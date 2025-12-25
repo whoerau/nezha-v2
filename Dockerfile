@@ -82,77 +82,9 @@ ENV NZ_SERVER="" \
     NZ_IP_REPORT_PERIOD="1800" \
     NZ_DEBUG="false"
 
-# 创建启动脚本
-RUN echo '#!/bin/bash' > /app/start.sh && \
-    echo 'if [ -z "$NZ_SERVER" ] || [ -z "$NZ_CLIENT_SECRET" ]; then' >> /app/start.sh && \
-    echo '  echo "错误: NZ_SERVER 和 NZ_CLIENT_SECRET 环境变量必须设置"' >> /app/start.sh && \
-    echo '  exit 1' >> /app/start.sh && \
-    echo 'fi' >> /app/start.sh && \
-    echo '' >> /app/start.sh && \
-    echo 'echo "正在启动 Nezha Agent..."' >> /app/start.sh && \
-    echo 'echo "服务器: $NZ_SERVER"' >> /app/start.sh && \
-    echo 'echo "TLS: $NZ_TLS"' >> /app/start.sh && \
-    echo '' >> /app/start.sh && \
-    echo 'ARGS="-s $NZ_SERVER -p $NZ_CLIENT_SECRET"' >> /app/start.sh && \
-    echo '' >> /app/start.sh && \
-    echo 'if [ -n "$NZ_UUID" ]; then' >> /app/start.sh && \
-    echo '  ARGS="$ARGS --uuid $NZ_UUID"' >> /app/start.sh && \
-    echo 'fi' >> /app/start.sh && \
-    echo '' >> /app/start.sh && \
-    echo 'if [ "$NZ_TLS" = "true" ]; then' >> /app/start.sh && \
-    echo '  ARGS="$ARGS --tls"' >> /app/start.sh && \
-    echo 'fi' >> /app/start.sh && \
-    echo '' >> /app/start.sh && \
-    echo 'if [ "$NZ_SKIP_CONN" = "true" ]; then' >> /app/start.sh && \
-    echo '  ARGS="$ARGS --skip-conn"' >> /app/start.sh && \
-    echo 'fi' >> /app/start.sh && \
-    echo '' >> /app/start.sh && \
-    echo 'if [ "$NZ_SKIP_PROCS" = "true" ]; then' >> /app/start.sh && \
-    echo '  ARGS="$ARGS --skip-procs"' >> /app/start.sh && \
-    echo 'fi' >> /app/start.sh && \
-    echo '' >> /app/start.sh && \
-    echo 'if [ -n "$NZ_REPORT_DELAY" ]; then' >> /app/start.sh && \
-    echo '  ARGS="$ARGS -d $NZ_REPORT_DELAY"' >> /app/start.sh && \
-    echo 'fi' >> /app/start.sh && \
-    echo '' >> /app/start.sh && \
-    echo 'if [ "$NZ_DISABLE_AUTO_UPDATE" = "true" ]; then' >> /app/start.sh && \
-    echo '  ARGS="$ARGS --disable-auto-update"' >> /app/start.sh && \
-    echo 'fi' >> /app/start.sh && \
-    echo '' >> /app/start.sh && \
-    echo 'if [ "$NZ_DISABLE_FORCE_UPDATE" = "true" ]; then' >> /app/start.sh && \
-    echo '  ARGS="$ARGS --disable-force-update"' >> /app/start.sh && \
-    echo 'fi' >> /app/start.sh && \
-    echo '' >> /app/start.sh && \
-    echo 'if [ "$NZ_DISABLE_COMMAND_EXECUTE" = "true" ]; then' >> /app/start.sh && \
-    echo '  ARGS="$ARGS --disable-command-execute"' >> /app/start.sh && \
-    echo 'fi' >> /app/start.sh && \
-    echo '' >> /app/start.sh && \
-    echo 'if [ "$NZ_DISABLE_NAT" = "true" ]; then' >> /app/start.sh && \
-    echo '  ARGS="$ARGS --disable-nat"' >> /app/start.sh && \
-    echo 'fi' >> /app/start.sh && \
-    echo '' >> /app/start.sh && \
-    echo 'if [ "$NZ_USE_IPV6" = "true" ]; then' >> /app/start.sh && \
-    echo '  ARGS="$ARGS --use-ipv6"' >> /app/start.sh && \
-    echo 'fi' >> /app/start.sh && \
-    echo '' >> /app/start.sh && \
-    echo 'if [ "$NZ_GPU" = "true" ]; then' >> /app/start.sh && \
-    echo '  ARGS="$ARGS --gpu"' >> /app/start.sh && \
-    echo 'fi' >> /app/start.sh && \
-    echo '' >> /app/start.sh && \
-    echo 'if [ "$NZ_TEMPERATURE" = "true" ]; then' >> /app/start.sh && \
-    echo '  ARGS="$ARGS --temperature"' >> /app/start.sh && \
-    echo 'fi' >> /app/start.sh && \
-    echo '' >> /app/start.sh && \
-    echo 'if [ -n "$NZ_IP_REPORT_PERIOD" ]; then' >> /app/start.sh && \
-    echo '  ARGS="$ARGS --ip-report-period $NZ_IP_REPORT_PERIOD"' >> /app/start.sh && \
-    echo 'fi' >> /app/start.sh && \
-    echo '' >> /app/start.sh && \
-    echo 'if [ "$NZ_DEBUG" = "true" ]; then' >> /app/start.sh && \
-    echo '  ARGS="$ARGS --debug"' >> /app/start.sh && \
-    echo 'fi' >> /app/start.sh && \
-    echo '' >> /app/start.sh && \
-    echo 'exec /opt/nezha/agent/nezha-agent $ARGS' >> /app/start.sh && \
-    chmod +x /app/start.sh
+# 复制启动脚本
+COPY start.sh /app/start.sh
+RUN chmod +x /app/start.sh
 
 # 健康检查
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
