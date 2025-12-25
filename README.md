@@ -49,6 +49,7 @@ docker run -d \
   -v /proc:/host/proc:ro \
   -v /sys:/host/sys:ro \
   -v /etc/os-release:/host/etc/os-release:ro \
+  -v $(pwd)/data:/data \
   whoerau/nezha-agent-v2:latest
 ```
 
@@ -112,11 +113,19 @@ network_mode: host
 
 ### 挂载卷
 
-为了获取准确的系统信息，容器需要挂载以下主机目录：
+为了获取准确的系统信息和持久化配置，容器需要挂载以下目录：
+
+**系统信息（只读）：**
 
 - `/proc` - 进程信息
 - `/sys` - 系统信息
 - `/etc/os-release` - 操作系统信息
+
+**持久化数据（读写）：**
+
+- `./data:/data` - 配置文件持久化目录（**重要**：保存 UUID，防止重启后变化）
+
+⚠️ **注意**：`./data` 目录会自动创建，用于保存 Agent 的配置和 UUID。删除此目录会导致 UUID 重新生成。
 
 ## 本地构建
 
@@ -205,6 +214,7 @@ docker-compose up -d
 ## 📚 文档
 
 - [完整参数说明](PARAMETERS.md) - 所有配置参数详解
+- [UUID 持久化说明](UUID_PERSISTENCE.md) - 防止重启后 UUID 变化
 - [兼容性说明](COMPATIBILITY.md) - 与官方脚本的兼容性
 - [版本同步机制](VERSION_SYNC.md) - 镜像版本与 Agent 版本同步说明
 - [构建指南](BUILD.md) - 本地构建和调试

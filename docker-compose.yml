@@ -80,6 +80,8 @@ services:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       - /etc/os-release:/host/etc/os-release:ro
+      # 持久化配置文件（保存 UUID）
+      - ./data:/data
 
     # 日志配置
     logging:

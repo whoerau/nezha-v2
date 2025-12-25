@@ -15,8 +15,9 @@ RUN apk add --no-cache \
 # 设置时区
 ENV TZ=Asia/Shanghai
 
-# 创建工作目录
+# 创建工作目录和数据目录
 WORKDIR /app
+RUN mkdir -p /data && chmod 777 /data
 
 # 检测架构并下载对应的 nezha-agent
 RUN set -ex && \
