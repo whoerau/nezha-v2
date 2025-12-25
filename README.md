@@ -24,6 +24,7 @@
      - NZ_SERVER=your-server-address:port # 你的 Nezha 服务器地址
      - NZ_TLS=true # 是否启用 TLS
      - NZ_CLIENT_SECRET=your-secret # 你的客户端密钥
+     - NZ_UUID=your-fixed-uuid-here # 生成一个唯一的UUID
    ```
 
 3. 启动容器：
@@ -46,6 +47,7 @@ docker run -d \
   -e NZ_SERVER=your-server-address:port \
   -e NZ_TLS=true \
   -e NZ_CLIENT_SECRET=your-secret \
+  -e NZ_UUID=your-fixed-uuid-here \
   -v /proc:/host/proc:ro \
   -v /sys:/host/sys:ro \
   -v /etc/os-release:/host/etc/os-release:ro \
@@ -56,25 +58,25 @@ docker run -d \
 
 > 💡 **查看完整参数说明**：[PARAMETERS.md](PARAMETERS.md) 包含所有参数的详细说明、使用场景和最佳实践。
 
-| 变量名                       | 必填 | 默认值          | 说明                                                 |
-| ---------------------------- | ---- | --------------- | ---------------------------------------------------- |
-| `NZ_SERVER`                  | ✅   | -               | Nezha 服务器地址，格式：`域名:端口`                  |
-| `NZ_CLIENT_SECRET`           | ✅   | -               | 客户端密钥                                           |
-| `NZ_UUID`                    | ❌   | -               | 客户端唯一标识（可选，用于区分不同 Agent）           |
-| `NZ_TLS`                     | ❌   | `false`         | 是否启用 TLS 连接                                    |
-| `NZ_REPORT_DELAY`            | ❌   | `1`             | 上报延迟（秒）                                       |
-| `NZ_SKIP_CONN`               | ❌   | `false`         | 跳过连接检查                                         |
-| `NZ_SKIP_PROCS`              | ❌   | `false`         | 跳过进程检查                                         |
-| `NZ_DISABLE_AUTO_UPDATE`     | ❌   | `false`         | 禁用自动更新（false=允许更新）                       |
-| `NZ_DISABLE_FORCE_UPDATE`    | ❌   | `false`         | 禁用强制更新（false=允许更新）                       |
-| `NZ_DISABLE_COMMAND_EXECUTE` | ❌   | `true`          | 禁用命令执行（安全选项，禁用后无法通过面板执行命令） |
-| `NZ_DISABLE_NAT`             | ❌   | `false`         | 禁用 NAT 穿透                                        |
-| `NZ_USE_IPV6`                | ❌   | `false`         | 使用 IPv6 进行连接                                   |
-| `NZ_GPU`                     | ❌   | `false`         | 启用 GPU 监控                                        |
-| `NZ_TEMPERATURE`             | ❌   | `false`         | 启用温度监控                                         |
-| `NZ_IP_REPORT_PERIOD`        | ❌   | `1800`          | IP 上报周期（秒）                                    |
-| `NZ_DEBUG`                   | ❌   | `false`         | 调试模式（输出详细日志）                             |
-| `TZ`                         | ❌   | `Asia/Shanghai` | 时区设置                                             |
+| 变量名                       | 必填 | 默认值          | 说明                                                     |
+| ---------------------------- | ---- | --------------- | -------------------------------------------------------- |
+| `NZ_SERVER`                  | ✅   | -               | Nezha 服务器地址，格式：`域名:端口`                      |
+| `NZ_CLIENT_SECRET`           | ✅   | -               | 客户端密钥                                               |
+| `NZ_UUID`                    | ✅   | -               | 客户端唯一标识（用于区分不同 Agent, 不填写每次重启会变） |
+| `NZ_TLS`                     | ❌   | `false`         | 是否启用 TLS 连接                                        |
+| `NZ_REPORT_DELAY`            | ❌   | `1`             | 上报延迟（秒）                                           |
+| `NZ_SKIP_CONN`               | ❌   | `false`         | 跳过连接检查                                             |
+| `NZ_SKIP_PROCS`              | ❌   | `false`         | 跳过进程检查                                             |
+| `NZ_DISABLE_AUTO_UPDATE`     | ❌   | `false`         | 禁用自动更新（false=允许更新）                           |
+| `NZ_DISABLE_FORCE_UPDATE`    | ❌   | `false`         | 禁用强制更新（false=允许更新）                           |
+| `NZ_DISABLE_COMMAND_EXECUTE` | ❌   | `true`          | 禁用命令执行（安全选项，禁用后无法通过面板执行命令）     |
+| `NZ_DISABLE_NAT`             | ❌   | `false`         | 禁用 NAT 穿透                                            |
+| `NZ_USE_IPV6`                | ❌   | `false`         | 使用 IPv6 进行连接                                       |
+| `NZ_GPU`                     | ❌   | `false`         | 启用 GPU 监控                                            |
+| `NZ_TEMPERATURE`             | ❌   | `false`         | 启用温度监控                                             |
+| `NZ_IP_REPORT_PERIOD`        | ❌   | `1800`          | IP 上报周期（秒）                                        |
+| `NZ_DEBUG`                   | ❌   | `false`         | 调试模式（输出详细日志）                                 |
+| `TZ`                         | ❌   | `Asia/Shanghai` | 时区设置                                                 |
 
 ## 配置说明
 
