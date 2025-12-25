@@ -138,6 +138,7 @@ docker-compose build
 - ✅ 推送到 main 分支时自动构建
 - ✅ 支持手动触发构建
 - ✅ 自动推送到 DockerHub
+- ✅ 镜像标签与 Nezha Agent 版本同步（如 v1.14.1）
 
 ### 配置 DockerHub Secrets
 
@@ -200,6 +201,14 @@ docker-compose pull
 # 重新创建容器
 docker-compose up -d
 ```
+
+## 📚 文档
+
+- [完整参数说明](PARAMETERS.md) - 所有配置参数详解
+- [兼容性说明](COMPATIBILITY.md) - 与官方脚本的兼容性
+- [版本同步机制](VERSION_SYNC.md) - 镜像版本与 Agent 版本同步说明
+- [构建指南](BUILD.md) - 本地构建和调试
+- [DockerHub 配置](SETUP.md) - GitHub Actions 和 DockerHub 配置
 
 ## 相关链接
 

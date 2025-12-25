@@ -28,6 +28,13 @@ jobs:
       - name: 检出代码
         uses: actions/checkout@v4
 
+      - name: 获取 Nezha Agent 最新版本
+        id: nezha_version
+        run: |
+          VERSION=$(curl -sL https://api.github.com/repos/nezhahq/agent/releases/latest | jq -r '.tag_name')
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Nezha Agent Version: ${VERSION}"
+
       - name: 设置 QEMU
         uses: docker/setup-qemu-action@v3
 
@@ -48,13 +55,10 @@ jobs:
           tags: |
             # 设置 latest 标签
             type=raw,value=latest,enable={{is_default_branch}}
+            # 使用 Nezha Agent 的版本号
+            type=raw,value=${{ steps.nezha_version.outputs.version }}
             # 根据日期生成标签 (YYYYMMDD 格式)
             type=schedule,pattern={{date 'YYYYMMDD'}}
-            # 根据 git 提交的 SHA 生成标签
-            type=sha,prefix={{date 'YYYYMMDD'}}-
-            # 如果推送了 tag，使用 tag 作为标签
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
 
       - name: 构建并推送 Docker 镜像
         uses: docker/build-push-action@v5

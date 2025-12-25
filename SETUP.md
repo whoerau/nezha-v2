@@ -46,9 +46,22 @@ git push origin main
 
 GitHub Actions 会自动生成以下标签：
 
-- `latest` - 最新版本（main 分支）
-- `YYYYMMDD` - 定时构建的日期标签（例如：`20250125`）
-- `YYYYMMDD-sha-xxxxxxx` - 包含 git commit SHA 的标签
+- `latest` - 最新版本（始终指向最新构建）
+- `v1.14.1` - Nezha Agent 版本号（与官方版本同步）
+- `20250125` - 构建日期标签（备份使用）
+
+**示例：**
+
+```bash
+# 使用最新版本
+docker pull whoerau/nezha-agent-v2:latest
+
+# 使用特定版本
+docker pull whoerau/nezha-agent-v2:v1.14.1
+
+# 使用日期版本
+docker pull whoerau/nezha-agent-v2:20250125
+```
 
 ## 🔄 手动触发构建
 
@@ -62,9 +75,10 @@ GitHub Actions 会自动生成以下标签：
 
 ## 📅 自动构建计划
 
-- **每月自动构建**：每月 1 号凌晨 2:00（UTC）
+- **每月自动构建**：每月 1 号凌晨 2:00（UTC）- 确保使用最新 Nezha Agent 版本
 - **代码推送触发**：修改 Dockerfile 或 workflow 文件时
 - **手动触发**：随时可以手动触发构建
+- **版本同步**：自动获取并使用 Nezha Agent 的最新版本号作为镜像标签
 
 ## 🔍 故障排查
 
