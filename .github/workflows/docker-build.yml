@@ -11,6 +11,7 @@ on:
       - main
     paths:
       - "Dockerfile"
+      - "start.sh"
       - ".github/workflows/docker-build.yml"
 
   # 允许手动触发
