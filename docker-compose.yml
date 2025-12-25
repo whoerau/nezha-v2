@@ -33,11 +33,11 @@ services:
       # 跳过进程检查
       - NZ_SKIP_PROCS=false
 
-      # 禁用自动更新
-      - NZ_DISABLE_AUTO_UPDATE=true
+      # 禁用自动更新（设置为 false 允许自动更新）
+      - NZ_DISABLE_AUTO_UPDATE=false
 
-      # 禁用强制更新
-      - NZ_DISABLE_FORCE_UPDATE=true
+      # 禁用强制更新（设置为 false 允许强制更新）
+      - NZ_DISABLE_FORCE_UPDATE=false
 
       # 禁用命令执行（安全选项，禁用后无法通过面板执行命令）
       - NZ_DISABLE_COMMAND_EXECUTE=true

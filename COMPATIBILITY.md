@@ -78,9 +78,9 @@ services:
       - NZ_SERVER=your-server-address:port
       - NZ_TLS=true
       - NZ_CLIENT_SECRET=your-secret
-      - NZ_DISABLE_AUTO_UPDATE=true      # Docker 环境推荐
-      - NZ_DISABLE_FORCE_UPDATE=true     # Docker 环境推荐
-      - NZ_DISABLE_COMMAND_EXECUTE=true  # Docker 环境默认（安全）
+      - NZ_DISABLE_AUTO_UPDATE=false     # 允许自动更新
+      - NZ_DISABLE_FORCE_UPDATE=false    # 允许强制更新
+      - NZ_DISABLE_COMMAND_EXECUTE=true  # 禁用命令执行（安全）
 ```
 
 ## 关键差异说明
@@ -90,9 +90,9 @@ services:
 **官方脚本**：默认启用自动更新
 - Agent 可以自动升级到最新版本
 
-**Docker 镜像**：默认禁用自动更新
-- 理由：Docker 环境应该通过重新拉取镜像来更新
-- 优势：保持环境一致性和可重现性
+**Docker 镜像**：默认启用自动更新
+- Agent 可以自动保持最新版本
+- 如需通过镜像控制版本，可设置 `NZ_DISABLE_AUTO_UPDATE=true`
 
 ### 2. 命令执行
 
@@ -193,9 +193,9 @@ services:
       - NZ_TLS=true
       - NZ_CLIENT_SECRET=your-secret
       - NZ_UUID=custom-uuid
-      - NZ_DISABLE_AUTO_UPDATE=true
-      - NZ_DISABLE_FORCE_UPDATE=true
-      - NZ_DISABLE_COMMAND_EXECUTE=true
+      - NZ_DISABLE_AUTO_UPDATE=false  # 允许自动更新
+      - NZ_DISABLE_FORCE_UPDATE=false # 允许强制更新
+      - NZ_DISABLE_COMMAND_EXECUTE=true # 禁用命令执行
 ```
 
 ## Docker 环境特殊注意事项

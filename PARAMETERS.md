@@ -4,26 +4,26 @@
 
 ## 参数对照表
 
-| 命令行参数                  | 环境变量                     | 类型   | 默认值 | 说明                                |
-| --------------------------- | ---------------------------- | ------ | ------ | ----------------------------------- |
-| `-s, --server`              | `NZ_SERVER`                  | string | -      | ✅ **必填** - Nezha 服务器地址      |
-| `-p, --password`            | `NZ_CLIENT_SECRET`           | string | -      | ✅ **必填** - 客户端连接密钥        |
-| `--uuid`                    | `NZ_UUID`                    | string | -      | 客户端唯一标识（可选）              |
-| `--tls`                     | `NZ_TLS`                     | bool   | false  | 是否启用 TLS 加密连接               |
-| `-d, --report-delay`        | `NZ_REPORT_DELAY`            | int    | 1      | 系统信息上报间隔（秒）              |
-| `--skip-conn`               | `NZ_SKIP_CONN`               | bool   | false  | 跳过网络连接数检查                  |
-| `--skip-procs`              | `NZ_SKIP_PROCS`              | bool   | false  | 跳过进程数量检查                    |
-| `--disable-auto-update`     | `NZ_DISABLE_AUTO_UPDATE`     | bool   | true\* | 禁用自动更新（Docker 环境推荐禁用） |
-| `--disable-force-update`    | `NZ_DISABLE_FORCE_UPDATE`    | bool   | true\* | 禁用强制更新（Docker 环境推荐禁用） |
-| `--disable-command-execute` | `NZ_DISABLE_COMMAND_EXECUTE` | bool   | true\* | 禁用命令执行功能（安全选项）        |
-| `--disable-nat`             | `NZ_DISABLE_NAT`             | bool   | false  | 禁用 NAT 穿透功能                   |
-| `--use-ipv6`                | `NZ_USE_IPV6`                | bool   | false  | 使用 IPv6 连接服务器                |
-| `--gpu`                     | `NZ_GPU`                     | bool   | false  | 启用 GPU 信息监控                   |
-| `--temperature`             | `NZ_TEMPERATURE`             | bool   | false  | 启用温度信息监控                    |
-| `--ip-report-period`        | `NZ_IP_REPORT_PERIOD`        | int    | 1800   | IP 地址上报周期（秒）               |
-| `--debug`                   | `NZ_DEBUG`                   | bool   | false  | 启用调试模式（详细日志输出）        |
+| 命令行参数                  | 环境变量                     | 类型   | 默认值 | 说明                           |
+| --------------------------- | ---------------------------- | ------ | ------ | ------------------------------ |
+| `-s, --server`              | `NZ_SERVER`                  | string | -      | ✅ **必填** - Nezha 服务器地址 |
+| `-p, --password`            | `NZ_CLIENT_SECRET`           | string | -      | ✅ **必填** - 客户端连接密钥   |
+| `--uuid`                    | `NZ_UUID`                    | string | -      | 客户端唯一标识（可选）         |
+| `--tls`                     | `NZ_TLS`                     | bool   | false  | 是否启用 TLS 加密连接          |
+| `-d, --report-delay`        | `NZ_REPORT_DELAY`            | int    | 1      | 系统信息上报间隔（秒）         |
+| `--skip-conn`               | `NZ_SKIP_CONN`               | bool   | false  | 跳过网络连接数检查             |
+| `--skip-procs`              | `NZ_SKIP_PROCS`              | bool   | false  | 跳过进程数量检查               |
+| `--disable-auto-update`     | `NZ_DISABLE_AUTO_UPDATE`     | bool   | false  | 禁用自动更新（false=允许更新） |
+| `--disable-force-update`    | `NZ_DISABLE_FORCE_UPDATE`    | bool   | false  | 禁用强制更新（false=允许更新） |
+| `--disable-command-execute` | `NZ_DISABLE_COMMAND_EXECUTE` | bool   | true\* | 禁用命令执行功能（安全选项）   |
+| `--disable-nat`             | `NZ_DISABLE_NAT`             | bool   | false  | 禁用 NAT 穿透功能              |
+| `--use-ipv6`                | `NZ_USE_IPV6`                | bool   | false  | 使用 IPv6 连接服务器           |
+| `--gpu`                     | `NZ_GPU`                     | bool   | false  | 启用 GPU 信息监控              |
+| `--temperature`             | `NZ_TEMPERATURE`             | bool   | false  | 启用温度信息监控               |
+| `--ip-report-period`        | `NZ_IP_REPORT_PERIOD`        | int    | 1800   | IP 地址上报周期（秒）          |
+| `--debug`                   | `NZ_DEBUG`                   | bool   | false  | 启用调试模式（详细日志输出）   |
 
-> \*注：在 Docker 环境中，我们默认禁用自动更新，因为镜像更新应该通过重新构建或拉取新镜像来完成。
+> \*注：默认启用自动更新以保持 Agent 版本最新。如果希望通过 Docker 镜像控制版本，可设置为 `true` 禁用自动更新。
 
 ## 参数详细说明
 
@@ -110,19 +110,18 @@
 #### NZ_DISABLE_AUTO_UPDATE
 
 - **值**：`true` 或 `false`
-- **Docker 默认**：`true`
-- **说明**：禁用 Agent 自动更新
-- **Docker 环境建议**：
-  - ✅ 始终设为 `true`
-  - 通过重新拉取镜像来更新 Agent
-  - 保持镜像的可重现性和可追溯性
+- **默认**：`false`（允许自动更新）
+- **说明**：控制 Agent 是否自动更新到最新版本
+- **建议**：
+  - ✅ 默认 `false`（允许更新）- Agent 自动保持最新
+  - ⚠️ 设为 `true` - 如果想通过 Docker 镜像控制版本
 
 #### NZ_DISABLE_FORCE_UPDATE
 
 - **值**：`true` 或 `false`
-- **Docker 默认**：`true`
-- **说明**：禁用强制更新
-- **Docker 环境建议**：与 `NZ_DISABLE_AUTO_UPDATE` 保持一致
+- **默认**：`false`（允许强制更新）
+- **说明**：控制是否允许服务器强制更新 Agent
+- **建议**：与 `NZ_DISABLE_AUTO_UPDATE` 保持一致
 
 ### 高级监控参数
 
@@ -175,9 +174,9 @@ environment:
   - NZ_SERVER=your-server:port
   - NZ_TLS=true
   - NZ_CLIENT_SECRET=your-secret
-  - NZ_DISABLE_AUTO_UPDATE=true
-  - NZ_DISABLE_FORCE_UPDATE=true
-  - NZ_DISABLE_COMMAND_EXECUTE=true # 默认已禁用命令执行
+  - NZ_DISABLE_AUTO_UPDATE=false # 允许自动更新
+  - NZ_DISABLE_FORCE_UPDATE=false # 允许强制更新
+  - NZ_DISABLE_COMMAND_EXECUTE=true # 禁用命令执行
 ```
 
 ### 完整监控配置
@@ -188,9 +187,9 @@ environment:
   - NZ_TLS=true
   - NZ_CLIENT_SECRET=your-secret
   - NZ_REPORT_DELAY=1
-  - NZ_DISABLE_AUTO_UPDATE=true
-  - NZ_DISABLE_FORCE_UPDATE=true
-  - NZ_DISABLE_COMMAND_EXECUTE=true # 保持命令执行禁用
+  - NZ_DISABLE_AUTO_UPDATE=false # 允许自动更新
+  - NZ_DISABLE_FORCE_UPDATE=false # 允许强制更新
+  - NZ_DISABLE_COMMAND_EXECUTE=true # 禁用命令执行
   - NZ_GPU=true # 启用 GPU 监控
   - NZ_TEMPERATURE=true # 启用温度监控
 ```
@@ -206,8 +205,8 @@ environment:
   - NZ_IP_REPORT_PERIOD=3600 # 1小时上报一次 IP
   - NZ_SKIP_CONN=true # 跳过连接数统计
   - NZ_SKIP_PROCS=true # 跳过进程数统计
-  - NZ_DISABLE_AUTO_UPDATE=true
-  - NZ_DISABLE_FORCE_UPDATE=true
+  - NZ_DISABLE_AUTO_UPDATE=false # 允许自动更新
+  - NZ_DISABLE_FORCE_UPDATE=false # 允许强制更新
 ```
 
 ### IPv6 环境配置
@@ -218,9 +217,9 @@ environment:
   - NZ_TLS=true
   - NZ_CLIENT_SECRET=your-secret
   - NZ_USE_IPV6=true
-  - NZ_DISABLE_AUTO_UPDATE=true
-  - NZ_DISABLE_FORCE_UPDATE=true
-  - NZ_DISABLE_COMMAND_EXECUTE=true
+  - NZ_DISABLE_AUTO_UPDATE=false # 允许自动更新
+  - NZ_DISABLE_FORCE_UPDATE=false # 允许强制更新
+  - NZ_DISABLE_COMMAND_EXECUTE=true # 禁用命令执行
 ```
 
 ## 从安装脚本迁移

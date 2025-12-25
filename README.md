@@ -65,8 +65,8 @@ docker run -d \
 | `NZ_REPORT_DELAY`            | ❌   | `1`             | 上报延迟（秒）                                       |
 | `NZ_SKIP_CONN`               | ❌   | `false`         | 跳过连接检查                                         |
 | `NZ_SKIP_PROCS`              | ❌   | `false`         | 跳过进程检查                                         |
-| `NZ_DISABLE_AUTO_UPDATE`     | ❌   | `true`          | 禁用自动更新                                         |
-| `NZ_DISABLE_FORCE_UPDATE`    | ❌   | `true`          | 禁用强制更新                                         |
+| `NZ_DISABLE_AUTO_UPDATE`     | ❌   | `false`         | 禁用自动更新（false=允许更新）                       |
+| `NZ_DISABLE_FORCE_UPDATE`    | ❌   | `false`         | 禁用强制更新（false=允许更新）                       |
 | `NZ_DISABLE_COMMAND_EXECUTE` | ❌   | `true`          | 禁用命令执行（安全选项，禁用后无法通过面板执行命令） |
 | `NZ_DISABLE_NAT`             | ❌   | `false`         | 禁用 NAT 穿透                                        |
 | `NZ_USE_IPV6`                | ❌   | `false`         | 使用 IPv6 进行连接                                   |
