@@ -17,6 +17,9 @@ on:
   # 允许手动触发
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 env:
   # DockerHub 用户名，需要在 GitHub Secrets 中设置 DOCKERHUB_USERNAME
   IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/nezha-agent-v2
@@ -31,8 +34,17 @@ jobs:
 
       - name: 获取 Nezha Agent 最新版本
         id: nezha_version
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
-          VERSION=$(curl -sL https://api.github.com/repos/nezhahq/agent/releases/latest | jq -r '.tag_name')
+          VERSION=$(curl -fsSL \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/nezhahq/agent/releases/latest | jq -r '.tag_name // empty')
+          if [ -z "${VERSION}" ]; then
+            echo "Failed to fetch Nezha Agent version" >&2
+            exit 1
+          fi
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "Nezha Agent Version: ${VERSION}"
 
@@ -71,6 +83,51 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            NEZHA_AGENT_VERSION=${{ steps.nezha_version.outputs.version }}
+
+      - name: 创建同版本 Git 标签
+        id: repository_tag
+        run: |
+          VERSION="${{ steps.nezha_version.outputs.version }}"
+          TAG_REF="refs/tags/${VERSION}"
+
+          if git ls-remote --exit-code --tags origin "${TAG_REF}" >/dev/null 2>&1; then
+            echo "Tag ${VERSION} already exists, skipping."
+            echo "tag_created=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "${VERSION}" -m "Nezha Agent ${VERSION}"
+
+          if git push origin "${TAG_REF}"; then
+            echo "Created tag ${VERSION}"
+            echo "tag_created=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          if git ls-remote --exit-code --tags origin "${TAG_REF}" >/dev/null 2>&1; then
+            echo "Tag ${VERSION} was created by another workflow run, skipping."
+            echo "tag_created=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "Failed to push tag ${VERSION}" >&2
+          exit 1
+
+      - name: 保持定时工作流活跃
+        if: github.event_name == 'schedule'
+        id: keepalive
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin "${GITHUB_REF_NAME}"
+          git checkout --detach "origin/${GITHUB_REF_NAME}"
+          git commit --allow-empty -m "chore: keep GitHub Actions schedule alive [skip ci]"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+          echo "commit_created=true" >> $GITHUB_OUTPUT
 
       - name: 生成构建摘要
         run: |
@@ -85,3 +142,7 @@ jobs:
           echo '```bash' >> $GITHUB_STEP_SUMMARY
           echo "docker pull ${{ env.IMAGE_NAME }}:latest" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**仓库标签:** ${{ steps.nezha_version.outputs.version }} (created=${{ steps.repository_tag.outputs.tag_created }})" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**定时任务保活提交:** ${{ steps.keepalive.outputs.commit_created || 'false' }}" >> $GITHUB_STEP_SUMMARY

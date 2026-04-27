@@ -20,6 +20,14 @@ GitHub Actions 在构建镜像时会自动：
    - 镜像标签使用 Nezha Agent 的版本号（如 `v1.14.1`）
    - 同时保留 `latest` 标签指向最新版本
 
+4. **创建仓库标签**
+   - Docker 镜像构建并推送成功后，GitHub Actions 会创建同名 Git 标签
+   - 如果该版本标签已经存在，则跳过创建，避免覆盖历史标签
+
+5. **保持定时任务活跃**
+   - GitHub 会在 public 仓库 60 天无活动时自动禁用定时工作流
+   - 每次定时构建成功后，workflow 会推送一个空提交作为仓库活动，不修改任何文件
+
 ## 📋 镜像标签策略
 
 ### 主要标签
@@ -29,6 +37,20 @@ GitHub Actions 在构建镜像时会自动：
 | `latest`                | 始终指向最新版本                           | `latest`          |
 | `v{major}.{minor}.{patch}` | Nezha Agent 版本号                       | `v1.14.1`         |
 | `{YYYYMMDD}`            | 构建日期                                   | `20250125`        |
+
+### Git 仓库标签
+
+构建成功后，仓库会自动创建与 Nezha Agent 相同的 Git 标签，例如 `v1.14.1`。由于 Git 标签名称必须唯一，如果同版本标签已经存在，workflow 会保留原标签并跳过创建。
+
+### 定时任务保活
+
+为了避免 GitHub Actions 的定时任务在 public 仓库长期无活动后被自动禁用，`schedule` 触发的构建成功后会创建一个空提交：
+
+```bash
+chore: keep GitHub Actions schedule alive [skip ci]
+```
+
+这个提交不会修改代码文件，`[skip ci]` 会避免它触发额外的 workflow 运行。
 
 ### 使用建议
 
@@ -197,4 +219,3 @@ GitHub API 有速率限制，如果频繁构建可能遇到限制：
 - [Docker 多阶段构建](https://docs.docker.com/build/building/multi-stage/)
 - [GitHub Actions 文档](https://docs.github.com/en/actions)
 - [DockerHub 自动构建](https://docs.docker.com/docker-hub/builds/)
-

@@ -3,6 +3,8 @@ FROM alpine:latest
 LABEL maintainer="nezha-agent-docker"
 LABEL description="Nezha Agent Docker Image"
 
+ARG NEZHA_AGENT_VERSION=""
+
 # 安装必要的工具
 RUN apk add --no-cache \
     wget \
@@ -30,9 +32,12 @@ RUN set -ex && \
     esac && \
     echo "Detected architecture: $ARCH" && \
     \
-    # 获取最新版本号
-    echo "Fetching latest version..." && \
-    VERSION=$(wget -qO- --timeout=10 "https://api.github.com/repos/nezhahq/agent/releases/latest" 2>/dev/null | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/' || echo "") && \
+    # 获取或使用指定版本号
+    VERSION="$NEZHA_AGENT_VERSION" && \
+    if [ -z "$VERSION" ]; then \
+        echo "Fetching latest version..."; \
+        VERSION=$(wget -qO- --timeout=10 "https://api.github.com/repos/nezhahq/agent/releases/latest" 2>/dev/null | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/' || echo ""); \
+    fi && \
     \
     # 如果获取失败，使用备用版本
     if [ -z "$VERSION" ]; then \
@@ -92,4 +97,3 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 
 # 启动命令
 CMD ["/app/start.sh"]
-
