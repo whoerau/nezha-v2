@@ -65,6 +65,11 @@ services:
       # 时区设置
       - TZ=Asia/Shanghai
 
+      # 如果 volumes 配置了挂载系统信息的路径，要告知 agent 读取的位置不是系统默认的位置
+      - HOST_PROC=/host/proc
+      - HOST_SYS=/host/sys
+      - HOST_ETC=/host/etc
+
     # 特权模式，用于获取完整的系统信息
     # privileged: true
 
