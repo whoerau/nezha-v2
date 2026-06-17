@@ -70,7 +70,7 @@ docker run -d \
 | `NZ_DISABLE_AUTO_UPDATE`     | ❌   | `false`         | 禁用自动更新（false=允许更新）                           |
 | `NZ_DISABLE_FORCE_UPDATE`    | ❌   | `false`         | 禁用强制更新（false=允许更新）                           |
 | `NZ_DISABLE_COMMAND_EXECUTE` | ❌   | `true`          | 禁用命令执行（安全选项，禁用后无法通过面板执行命令）     |
-| `NZ_DISABLE_NAT`             | ❌   | `false`         | 禁用 NAT 穿透                                            |
+| `NZ_DISABLE_NAT`             | ❌   | `true`          | 禁用 NAT 穿透                                            |
 | `NZ_USE_IPV6`                | ❌   | `false`         | 使用 IPv6 进行连接                                       |
 | `NZ_GPU`                     | ❌   | `false`         | 启用 GPU 监控                                            |
 | `NZ_TEMPERATURE`             | ❌   | `false`         | 启用温度监控                                             |
