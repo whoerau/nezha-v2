@@ -156,17 +156,17 @@ docker-compose build
 
 ## GitHub Actions 自动构建
 
-本项目使用 GitHub Actions 自动构建和推送镜像到 DockerHub：
+本项目使用 GitHub Actions 自动构建，并推送镜像到 DockerHub 和 GitHub Container Registry：
 
 - ✅ 每月 1 号凌晨 2 点自动构建最新版本
 - ✅ 推送到 main 分支时自动构建
 - ✅ 支持手动触发构建
-- ✅ 自动推送到 DockerHub
+- ✅ 自动推送到 DockerHub 和 GHCR
 - ✅ 镜像标签与 Nezha Agent 版本同步（如 v1.14.1）
 
 ### 配置 DockerHub Secrets
 
-在使用 GitHub Actions 自动构建前，需要在 GitHub 仓库中配置以下 Secrets：
+在使用 GitHub Actions 自动构建前，需要在 GitHub 仓库中配置 DockerHub Secrets。GHCR 使用内置 `GITHUB_TOKEN`，无需额外配置：
 
 1. 进入仓库的 Settings → Secrets and variables → Actions
 2. 添加以下两个 secrets：
@@ -233,7 +233,7 @@ docker-compose up -d
 - [兼容性说明](COMPATIBILITY.md) - 与官方脚本的兼容性
 - [版本同步机制](VERSION_SYNC.md) - 镜像版本与 Agent 版本同步说明
 - [构建指南](BUILD.md) - 本地构建和调试
-- [DockerHub 配置](SETUP.md) - GitHub Actions 和 DockerHub 配置
+- [DockerHub/GHCR 配置](SETUP.md) - GitHub Actions 镜像发布配置
 
 ## ⚠️ UUID 说明
 
@@ -247,6 +247,7 @@ environment:
 ## 相关链接
 
 - [DockerHub 镜像仓库](https://hub.docker.com/r/whoerau/nezha-agent-v2)
+- [GHCR 镜像仓库](https://github.com/whoerau/nezha-v2/pkgs/container/nezha-v2)
 - [哪吒监控官方网站](https://nezha.wiki/)
 - [哪吒监控 GitHub](https://github.com/nezhahq/nezha)
 - [Agent 安装脚本](https://github.com/nezhahq/scripts)

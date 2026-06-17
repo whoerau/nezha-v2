@@ -183,6 +183,7 @@ docker buildx build --no-cache --platform linux/amd64,linux/arm64 .
 
 3. **推送目标**：
    - DockerHub: `whoerau/nezha-agent-v2`
+   - GHCR: `ghcr.io/whoerau/nezha-v2`
 
 ## 验证镜像
 

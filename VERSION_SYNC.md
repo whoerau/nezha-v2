@@ -19,6 +19,7 @@ GitHub Actions 在构建镜像时会自动：
 3. **标记镜像版本**
    - 镜像标签使用 Nezha Agent 的版本号（如 `v1.14.1`）
    - 同时保留 `latest` 标签指向最新版本
+   - 同一组标签会推送到 DockerHub 和 GHCR
 
 4. **创建仓库标签**
    - Docker 镜像构建并推送成功后，GitHub Actions 会创建同名 Git 标签
@@ -58,12 +59,16 @@ chore: keep GitHub Actions schedule alive [skip ci]
 ```yaml
 # 使用具体版本号，便于版本控制和回滚
 image: whoerau/nezha-agent-v2:v1.14.1
+# 或使用 GHCR:
+# image: ghcr.io/whoerau/nezha-v2:v1.14.1
 ```
 
 **测试环境推荐：**
 ```yaml
 # 使用 latest 标签，始终获取最新版本
 image: whoerau/nezha-agent-v2:latest
+# 或使用 GHCR:
+# image: ghcr.io/whoerau/nezha-v2:latest
 ```
 
 ## 🔍 查看版本信息
@@ -79,9 +84,11 @@ docker pull whoerau/nezha-agent-v2:latest
 docker images whoerau/nezha-agent-v2
 ```
 
-### 在 DockerHub 查看所有版本
+### 在 DockerHub/GHCR 查看所有版本
 
 访问：https://hub.docker.com/r/whoerau/nezha-agent-v2/tags
+
+或访问：https://github.com/whoerau/nezha-v2/pkgs/container/nezha-v2
 
 ## 📅 版本发布周期
 
@@ -106,7 +113,7 @@ graph LR
     B --> C[获取最新版本号]
     C --> D[构建 Docker 镜像]
     D --> E[标记版本号]
-    E --> F[推送到 DockerHub]
+    E --> F[推送到 DockerHub 和 GHCR]
     F --> G[latest + v1.x.x]
 ```
 
@@ -173,9 +180,13 @@ GitHub Actions 会在构建摘要中显示：
 - whoerau/nezha-agent-v2:latest
 - whoerau/nezha-agent-v2:v1.14.1
 - whoerau/nezha-agent-v2:20250125
+- ghcr.io/whoerau/nezha-v2:latest
+- ghcr.io/whoerau/nezha-v2:v1.14.1
+- ghcr.io/whoerau/nezha-v2:20250125
 
 **拉取命令:**
 docker pull whoerau/nezha-agent-v2:latest
+docker pull ghcr.io/whoerau/nezha-v2:latest
 ```
 
 ### 运行时验证

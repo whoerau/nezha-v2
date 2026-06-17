@@ -1,4 +1,4 @@
-# DockerHub 配置指南
+# DockerHub 与 GHCR 配置指南
 
 ## 🚀 快速配置步骤
 
@@ -31,7 +31,7 @@
 
 ```bash
 git add .
-git commit -m "feat: 配置 DockerHub 自动构建"
+git commit -m "feat: 配置镜像自动构建"
 git push origin main
 ```
 
@@ -39,8 +39,9 @@ git push origin main
 
 1. 推送代码后，GitHub Actions 会自动触发构建
 2. 访问仓库的 Actions 页面查看构建进度
-3. 构建成功后，镜像会自动推送到 DockerHub
-4. 访问 `https://hub.docker.com/r/你的用户名/nezha-agent` 查看镜像
+3. 构建成功后，镜像会自动推送到 DockerHub 和 GHCR
+4. 访问 `https://hub.docker.com/r/你的用户名/nezha-agent-v2` 查看镜像
+5. 仓库右侧 Packages 会显示 GHCR 镜像包
 
 ## 📋 镜像标签说明
 
@@ -55,12 +56,15 @@ GitHub Actions 会自动生成以下标签：
 ```bash
 # 使用最新版本
 docker pull whoerau/nezha-agent-v2:latest
+docker pull ghcr.io/whoerau/nezha-v2:latest
 
 # 使用特定版本
 docker pull whoerau/nezha-agent-v2:v1.14.1
+docker pull ghcr.io/whoerau/nezha-v2:v1.14.1
 
 # 使用日期版本
 docker pull whoerau/nezha-agent-v2:20250125
+docker pull ghcr.io/whoerau/nezha-v2:20250125
 ```
 
 ## 🔄 手动触发构建
@@ -84,11 +88,13 @@ docker pull whoerau/nezha-agent-v2:20250125
 
 ### 构建失败：认证错误
 
-如果出现认证失败，检查：
+如果 DockerHub 出现认证失败，检查：
 
 1. DOCKERHUB_USERNAME 和 DOCKERHUB_TOKEN 是否正确设置
 2. Access Token 是否有足够的权限
 3. Token 是否已过期（需要重新生成）
+
+GHCR 使用 GitHub Actions 内置的 `GITHUB_TOKEN` 和 `packages: write` 权限，不需要单独配置 secret。
 
 ### 推送失败：仓库不存在
 
@@ -100,9 +106,9 @@ docker pull whoerau/nezha-agent-v2:20250125
 
 ### 镜像名称配置
 
-当前镜像名称为 `whoerau/nezha-agent-v2`。如果你的 DockerHub 用户名不是 `whoerau`，需要修改：
+当前镜像名称为 `whoerau/nezha-agent-v2` 和 `ghcr.io/whoerau/nezha-v2`。如果你的 DockerHub 用户名不是 `whoerau`，需要修改：
 
-1. `.github/workflows/docker-build.yml` 中的 `IMAGE_NAME` 环境变量
+1. `.github/workflows/docker-build.yml` 中的 `DOCKERHUB_IMAGE` 环境变量
 2. `docker-compose.yml` 中的 `image` 字段
 3. `README.md` 中的相关说明
 
@@ -112,14 +118,16 @@ docker pull whoerau/nezha-agent-v2:20250125
 
 - ✅ 每月自动更新
 - ✅ 支持多架构（amd64、arm64、armv7）
-- ✅ 自动推送到 DockerHub
+- ✅ 自动推送到 DockerHub 和 GitHub Packages
 - ✅ 可以通过 `docker pull whoerau/nezha-agent-v2:latest` 获取
+- ✅ 可以通过 `docker pull ghcr.io/whoerau/nezha-v2:latest` 获取
 
 ## 📦 使用镜像
 
 ```bash
 # 拉取镜像
 docker pull whoerau/nezha-agent-v2:latest
+docker pull ghcr.io/whoerau/nezha-v2:latest
 
 # 或使用 docker-compose
 docker-compose pull
