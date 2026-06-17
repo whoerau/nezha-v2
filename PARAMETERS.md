@@ -15,15 +15,13 @@
 | `--skip-procs`              | `NZ_SKIP_PROCS`              | bool   | false  | 跳过进程数量检查               |
 | `--disable-auto-update`     | `NZ_DISABLE_AUTO_UPDATE`     | bool   | false  | 禁用自动更新（false=允许更新） |
 | `--disable-force-update`    | `NZ_DISABLE_FORCE_UPDATE`    | bool   | false  | 禁用强制更新（false=允许更新） |
-| `--disable-command-execute` | `NZ_DISABLE_COMMAND_EXECUTE` | bool   | true\* | 禁用命令执行功能（安全选项）   |
-| `--disable-nat`             | `NZ_DISABLE_NAT`             | bool   | false  | 禁用 NAT 穿透功能              |
+| `--disable-command-execute` | `NZ_DISABLE_COMMAND_EXECUTE` | bool   | true   | 禁用命令执行功能（安全选项）   |
+| `--disable-nat`             | `NZ_DISABLE_NAT`             | bool   | true   | 禁用 NAT 穿透功能              |
 | `--use-ipv6`                | `NZ_USE_IPV6`                | bool   | false  | 使用 IPv6 连接服务器           |
 | `--gpu`                     | `NZ_GPU`                     | bool   | false  | 启用 GPU 信息监控              |
 | `--temperature`             | `NZ_TEMPERATURE`             | bool   | false  | 启用温度信息监控               |
 | `--ip-report-period`        | `NZ_IP_REPORT_PERIOD`        | int    | 1800   | IP 地址上报周期（秒）          |
 | `--debug`                   | `NZ_DEBUG`                   | bool   | false  | 启用调试模式（详细日志输出）   |
-
-> \*注：默认启用自动更新以保持 Agent 版本最新。如果希望通过 Docker 镜像控制版本，可设置为 `true` 禁用自动更新。
 
 ## 参数详细说明
 
@@ -102,8 +100,9 @@
 #### NZ_DISABLE_NAT
 
 - **值**：`true` 或 `false`
+- **Docker 默认**：`true`
 - **说明**：禁用 NAT 穿透功能
-- **适用场景**：不需要 NAT 穿透的网络环境
+- **适用场景**：默认不使用 NAT 穿透；需要 NAT 穿透时设置为 `false`
 
 ### 更新相关参数
 

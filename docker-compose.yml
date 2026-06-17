@@ -45,7 +45,7 @@ services:
       - NZ_DISABLE_COMMAND_EXECUTE=true
 
       # 禁用 NAT 穿透
-      - NZ_DISABLE_NAT=false
+      - NZ_DISABLE_NAT=true
 
       # 使用 IPv6
       - NZ_USE_IPV6=false

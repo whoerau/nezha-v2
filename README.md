@@ -10,6 +10,7 @@
 - ✅ 通过环境变量灵活配置
 - ✅ 支持 Docker Compose 一键部署
 - ✅ 包含健康检查
+- ✅ Compose 示例包含日志轮转
 
 ## 快速开始
 
@@ -24,7 +25,11 @@
      - NZ_SERVER=your-server-address:port # 你的 Nezha 服务器地址
      - NZ_TLS=true # 是否启用 TLS
      - NZ_CLIENT_SECRET=your-secret # 你的客户端密钥
-     - NZ_UUID=your-fixed-uuid-here # 生成一个唯一的UUID
+     - NZ_DISABLE_NAT=true # 禁用 NAT 穿透
+     # - NZ_UUID=your-fixed-uuid-here # 可选：固定 Agent UUID
+     - HOST_PROC=/host/proc
+     - HOST_SYS=/host/sys
+     - HOST_ETC=/host/etc
    ```
 
 3. 启动容器：
@@ -47,7 +52,13 @@ docker run -d \
   -e NZ_SERVER=your-server-address:port \
   -e NZ_TLS=true \
   -e NZ_CLIENT_SECRET=your-secret \
-  -e NZ_UUID=your-fixed-uuid-here \
+  -e NZ_DISABLE_NAT=true \
+  -e HOST_PROC=/host/proc \
+  -e HOST_SYS=/host/sys \
+  -e HOST_ETC=/host/etc \
+  --network host \
+  --cap-add NET_ADMIN \
+  --cap-add NET_RAW \
   -v /proc:/host/proc:ro \
   -v /sys:/host/sys:ro \
   -v /etc/os-release:/host/etc/os-release:ro \
@@ -58,25 +69,28 @@ docker run -d \
 
 > 💡 **查看完整参数说明**：[PARAMETERS.md](PARAMETERS.md) 包含所有参数的详细说明、使用场景和最佳实践。
 
-| 变量名                       | 必填 | 默认值          | 说明                                                     |
-| ---------------------------- | ---- | --------------- | -------------------------------------------------------- |
-| `NZ_SERVER`                  | ✅   | -               | Nezha 服务器地址，格式：`域名:端口`                      |
-| `NZ_CLIENT_SECRET`           | ✅   | -               | 客户端密钥                                               |
-| `NZ_UUID`                    | ✅   | -               | 客户端唯一标识（用于区分不同 Agent, 不填写每次重启会变） |
-| `NZ_TLS`                     | ❌   | `false`         | 是否启用 TLS 连接                                        |
-| `NZ_REPORT_DELAY`            | ❌   | `1`             | 上报延迟（秒）                                           |
-| `NZ_SKIP_CONN`               | ❌   | `false`         | 跳过连接检查                                             |
-| `NZ_SKIP_PROCS`              | ❌   | `false`         | 跳过进程检查                                             |
-| `NZ_DISABLE_AUTO_UPDATE`     | ❌   | `false`         | 禁用自动更新（false=允许更新）                           |
-| `NZ_DISABLE_FORCE_UPDATE`    | ❌   | `false`         | 禁用强制更新（false=允许更新）                           |
-| `NZ_DISABLE_COMMAND_EXECUTE` | ❌   | `true`          | 禁用命令执行（安全选项，禁用后无法通过面板执行命令）     |
-| `NZ_DISABLE_NAT`             | ❌   | `true`          | 禁用 NAT 穿透                                            |
-| `NZ_USE_IPV6`                | ❌   | `false`         | 使用 IPv6 进行连接                                       |
-| `NZ_GPU`                     | ❌   | `false`         | 启用 GPU 监控                                            |
-| `NZ_TEMPERATURE`             | ❌   | `false`         | 启用温度监控                                             |
-| `NZ_IP_REPORT_PERIOD`        | ❌   | `1800`          | IP 上报周期（秒）                                        |
-| `NZ_DEBUG`                   | ❌   | `false`         | 调试模式（输出详细日志）                                 |
-| `TZ`                         | ❌   | `Asia/Shanghai` | 时区设置                                                 |
+| 变量名                       | 必填 | 默认值          | 说明                                                             |
+| ---------------------------- | ---- | --------------- | ---------------------------------------------------------------- |
+| `NZ_SERVER`                  | ✅   | -               | Nezha 服务器地址，格式：`域名:端口`                              |
+| `NZ_CLIENT_SECRET`           | ✅   | -               | 客户端密钥                                                       |
+| `NZ_UUID`                    | ❌   | 自动生成        | 客户端唯一标识；如需重启后保持不变，请手动设置                   |
+| `NZ_TLS`                     | ❌   | `false`         | 是否启用 TLS 连接                                                |
+| `NZ_REPORT_DELAY`            | ❌   | `1`             | 上报延迟（秒）                                                   |
+| `NZ_SKIP_CONN`               | ❌   | `false`         | 跳过连接检查                                                     |
+| `NZ_SKIP_PROCS`              | ❌   | `false`         | 跳过进程检查                                                     |
+| `NZ_DISABLE_AUTO_UPDATE`     | ❌   | `false`         | 禁用自动更新（false=允许更新）                                   |
+| `NZ_DISABLE_FORCE_UPDATE`    | ❌   | `false`         | 禁用强制更新（false=允许更新）                                   |
+| `NZ_DISABLE_COMMAND_EXECUTE` | ❌   | `true`          | 禁用命令执行（安全选项，禁用后无法通过面板执行命令）             |
+| `NZ_DISABLE_NAT`             | ❌   | `true`          | 禁用 NAT 穿透                                                    |
+| `NZ_USE_IPV6`                | ❌   | `false`         | 使用 IPv6 进行连接                                               |
+| `NZ_GPU`                     | ❌   | `false`         | 启用 GPU 监控                                                    |
+| `NZ_TEMPERATURE`             | ❌   | `false`         | 启用温度监控                                                     |
+| `NZ_IP_REPORT_PERIOD`        | ❌   | `1800`          | IP 上报周期（秒）                                                |
+| `NZ_DEBUG`                   | ❌   | `false`         | 调试模式（输出详细日志）                                         |
+| `TZ`                         | ❌   | `Asia/Shanghai` | 时区设置                                                         |
+| `HOST_PROC`                  | ❌   | 系统默认        | 主机 `/proc` 挂载后的容器内路径；示例为 `/host/proc`             |
+| `HOST_SYS`                   | ❌   | 系统默认        | 主机 `/sys` 挂载后的容器内路径；示例为 `/host/sys`               |
+| `HOST_ETC`                   | ❌   | 系统默认        | 主机 `/etc` 挂载后的容器内路径；示例为 `/host/etc`               |
 
 ## 配置说明
 
@@ -88,13 +102,12 @@ docker run -d \
 
 ### 权限配置
 
-容器需要一些特殊权限来获取完整的系统信息：
+容器需要一些特殊权限来获取完整的系统信息。`docker-compose.yml` 示例默认添加：
 
-- `SYS_ADMIN`：访问系统管理功能
 - `NET_ADMIN`：访问网络管理功能
 - `NET_RAW`：访问原始网络套接字
 
-如果你需要更多权限，可以在 `docker-compose.yml` 中启用 `privileged: true`。
+如果系统信息仍不完整，再考虑取消注释 `SYS_ADMIN` 或启用 `privileged: true`。
 
 ### GPU 和温度监控
 
@@ -106,7 +119,7 @@ docker run -d \
 
 ### 网络模式
 
-默认使用桥接模式。如果需要获取更准确的网络信息，可以使用 host 模式：
+`docker-compose.yml` 示例使用 host 模式，以便获取更准确的网络信息：
 
 ```yaml
 network_mode: host
@@ -119,6 +132,15 @@ network_mode: host
 - `/proc` - 进程信息
 - `/sys` - 系统信息
 - `/etc/os-release` - 操作系统信息
+
+如果挂载到容器内的路径不是系统默认路径，需要同时设置读取路径：
+
+```yaml
+environment:
+  - HOST_PROC=/host/proc
+  - HOST_SYS=/host/sys
+  - HOST_ETC=/host/etc
+```
 
 ## 本地构建
 
@@ -189,8 +211,9 @@ A:
 A:
 
 1. 确保已挂载必要的主机目录（/proc、/sys 等）
-2. 检查容器是否有足够的权限
-3. 考虑使用 `privileged: true` 或 `network_mode: host`
+2. 确认 `HOST_PROC`、`HOST_SYS`、`HOST_ETC` 指向容器内实际挂载路径
+3. 检查容器是否有足够的权限
+4. 考虑使用 `privileged: true` 或 `network_mode: host`
 
 ## 更新
 

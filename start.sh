@@ -21,7 +21,7 @@ debug: ${NZ_DEBUG:-false}
 disable_auto_update: ${NZ_DISABLE_AUTO_UPDATE:-false}
 disable_command_execute: ${NZ_DISABLE_COMMAND_EXECUTE:-true}
 disable_force_update: ${NZ_DISABLE_FORCE_UPDATE:-false}
-disable_nat: ${NZ_DISABLE_NAT:-false}
+disable_nat: ${NZ_DISABLE_NAT:-true}
 disable_send_query: ${NZ_SKIP_CONN:-false}
 gpu: ${NZ_GPU:-false}
 insecure_tls: false
@@ -51,4 +51,3 @@ echo ""
 
 # 启动 nezha-agent
 exec /opt/nezha/agent/nezha-agent -c "$CONFIG_FILE"
-

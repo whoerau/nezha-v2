@@ -196,6 +196,7 @@ services:
       - NZ_DISABLE_AUTO_UPDATE=false  # 允许自动更新
       - NZ_DISABLE_FORCE_UPDATE=false # 允许强制更新
       - NZ_DISABLE_COMMAND_EXECUTE=true # 禁用命令执行
+      - NZ_DISABLE_NAT=true # 禁用 NAT 穿透
 ```
 
 ## Docker 环境特殊注意事项
@@ -282,4 +283,3 @@ privileged: true
 - [官方安装脚本](https://github.com/nezhahq/scripts)
 - [Agent 源代码](https://github.com/nezhahq/agent)
 - [完整参数说明](PARAMETERS.md)
-
