@@ -5,13 +5,14 @@ LABEL description="Nezha Agent Docker Image"
 
 ARG NEZHA_AGENT_VERSION=""
 
-# 安装必要的工具
+# 安装必要工具并写入容器内 IPv4 优先规则 / Install tools and prefer IPv4 when gai.conf is honored
 RUN apk add --no-cache \
     wget \
     unzip \
     bash \
     ca-certificates \
     tzdata \
+    && printf '%s\n' 'precedence ::ffff:0:0/96  100' > /etc/gai.conf \
     && rm -rf /var/cache/apk/*
 
 # 设置时区
