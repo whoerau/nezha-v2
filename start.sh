@@ -48,6 +48,8 @@ if [ -n "${NZ_HARD_DRIVE_PARTITION_ALLOWLIST:-}" ]; then
     fi
   done
 fi
+# 中文/EN: The agent also loads NZ_* env vars; do not let the comma string override this YAML list.
+unset NZ_HARD_DRIVE_PARTITION_ALLOWLIST
 
 # 如果指定了 UUID，添加到配置文件
 if [ -n "$NZ_UUID" ]; then
