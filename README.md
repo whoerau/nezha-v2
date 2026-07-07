@@ -84,7 +84,8 @@ docker run -d \
 | `NZ_DISABLE_NAT`             | ❌   | `true`          | 禁用 NAT 穿透                                                    |
 | `NZ_USE_IPV6`                | ❌   | `false`         | 使用 IPv6 进行连接                                               |
 | `NZ_GPU`                     | ❌   | `false`         | 启用 GPU 监控                                                    |
-| `NZ_TEMPERATURE`             | ❌   | `false`         | 启用温度监控                                                     |
+| `NZ_TEMPERATURE`             | ❌   | `true`          | 启用温度监控                                                     |
+| `NZ_HARD_DRIVE_PARTITION_ALLOWLIST` | ❌ | 空 | 逗号分隔的磁盘分区监控白名单；留空使用 Agent 默认发现 |
 | `NZ_IP_REPORT_PERIOD`        | ❌   | `1800`          | IP 上报周期（秒）                                                |
 | `NZ_DEBUG`                   | ❌   | `false`         | 调试模式（输出详细日志）                                         |
 | `TZ`                         | ❌   | `Asia/Shanghai` | 时区设置                                                         |
@@ -114,8 +115,17 @@ docker run -d \
 如果需要监控 GPU 或温度信息：
 
 1. 设置 `NZ_GPU=true` 启用 GPU 监控
-2. 设置 `NZ_TEMPERATURE=true` 启用温度监控
+2. `NZ_TEMPERATURE` 默认启用；如需关闭，设置为 `false`
 3. 确保容器有权限访问对应的设备文件（可能需要 `privileged: true` 或挂载特定设备）
+
+### 磁盘分区白名单
+
+如果同一块磁盘被 bind mount 到多个路径导致面板重复统计，可以设置 `NZ_HARD_DRIVE_PARTITION_ALLOWLIST`，例如只统计根分区：
+
+```yaml
+environment:
+  - NZ_HARD_DRIVE_PARTITION_ALLOWLIST=/
+```
 
 ### 网络模式
 

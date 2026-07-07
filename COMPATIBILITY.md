@@ -51,6 +51,7 @@ env="NZ_UUID=$NZ_UUID \
 | `NZ_USE_IPV6`             | 使用 IPv6                |
 | `NZ_GPU`                  | 启用 GPU 监控            |
 | `NZ_TEMPERATURE`          | 启用温度监控             |
+| `NZ_HARD_DRIVE_PARTITION_ALLOWLIST` | 磁盘分区监控白名单 |
 | `NZ_IP_REPORT_PERIOD`     | IP 上报周期              |
 | `NZ_DEBUG`                | 调试模式                 |
 

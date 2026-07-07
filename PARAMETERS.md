@@ -19,7 +19,8 @@
 | `--disable-nat`             | `NZ_DISABLE_NAT`             | bool   | true   | 禁用 NAT 穿透功能              |
 | `--use-ipv6`                | `NZ_USE_IPV6`                | bool   | false  | 使用 IPv6 连接服务器           |
 | `--gpu`                     | `NZ_GPU`                     | bool   | false  | 启用 GPU 信息监控              |
-| `--temperature`             | `NZ_TEMPERATURE`             | bool   | false  | 启用温度信息监控               |
+| `--temperature`             | `NZ_TEMPERATURE`             | bool   | true   | 启用温度信息监控               |
+| -                           | `NZ_HARD_DRIVE_PARTITION_ALLOWLIST` | string | - | 逗号分隔的磁盘分区监控白名单 |
 | `--ip-report-period`        | `NZ_IP_REPORT_PERIOD`        | int    | 1800   | IP 地址上报周期（秒）          |
 | `--debug`                   | `NZ_DEBUG`                   | bool   | false  | 启用调试模式（详细日志输出）   |
 
@@ -136,11 +137,19 @@
 #### NZ_TEMPERATURE
 
 - **值**：`true` 或 `false`
+- **Docker 默认**：`true`
 - **说明**：启用 CPU/GPU 温度监控
 - **要求**：
   - 需要访问温度传感器设备
   - 可能需要 `privileged: true`
   - Docker 环境可能需要挂载 `/sys/class/thermal` 等目录
+
+#### NZ_HARD_DRIVE_PARTITION_ALLOWLIST
+
+- **类型**：逗号分隔字符串
+- **示例**：`/`、`/,/data`
+- **说明**：写入 Nezha Agent 的 `hard_drive_partition_allowlist`，只统计列出的磁盘分区
+- **适用场景**：同一块磁盘被 bind mount 到多个路径时，限制统计路径以避免磁盘容量和已用空间重复计算
 
 ### 网络参数
 
@@ -190,7 +199,8 @@ environment:
   - NZ_DISABLE_FORCE_UPDATE=false # 允许强制更新
   - NZ_DISABLE_COMMAND_EXECUTE=true # 禁用命令执行
   - NZ_GPU=true # 启用 GPU 监控
-  - NZ_TEMPERATURE=true # 启用温度监控
+  - NZ_TEMPERATURE=true # 启用温度监控（默认已启用）
+  - NZ_HARD_DRIVE_PARTITION_ALLOWLIST=/ # 只统计根分区
 ```
 
 ### 低资源占用配置

@@ -54,7 +54,10 @@ services:
       - NZ_GPU=false
 
       # 启用温度监控
-      - NZ_TEMPERATURE=false
+      - NZ_TEMPERATURE=true
+
+      # 磁盘分区监控白名单，逗号分隔；例如 / 或 /,/data
+      # - NZ_HARD_DRIVE_PARTITION_ALLOWLIST=/
 
       # IP 上报周期（秒）
       - NZ_IP_REPORT_PERIOD=1800

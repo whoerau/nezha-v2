@@ -84,7 +84,8 @@ ENV NZ_SERVER="" \
     NZ_DISABLE_NAT="true" \
     NZ_USE_IPV6="false" \
     NZ_GPU="false" \
-    NZ_TEMPERATURE="false" \
+    NZ_TEMPERATURE="true" \
+    NZ_HARD_DRIVE_PARTITION_ALLOWLIST="" \
     NZ_IP_REPORT_PERIOD="1800" \
     NZ_DEBUG="false"
 

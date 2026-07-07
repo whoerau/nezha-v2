@@ -12,7 +12,8 @@ echo "服务器: $NZ_SERVER"
 echo "TLS: $NZ_TLS"
 
 # 配置文件路径
-CONFIG_FILE="/app/config.yml"
+CONFIG_FILE="${NZ_CONFIG_FILE:-/app/config.yml}"
+AGENT_BIN="${NZ_AGENT_BIN:-/opt/nezha/agent/nezha-agent}"
 
 # 生成配置文件
 cat > "$CONFIG_FILE" <<EOF
@@ -30,10 +31,23 @@ report_delay: ${NZ_REPORT_DELAY:-1}
 server: ${NZ_SERVER}
 skip_connection_count: ${NZ_SKIP_CONN:-false}
 skip_procs_count: ${NZ_SKIP_PROCS:-false}
-temperature: ${NZ_TEMPERATURE:-false}
+temperature: ${NZ_TEMPERATURE:-true}
 tls: ${NZ_TLS:-false}
 use_ipv6_country_code: ${NZ_USE_IPV6:-false}
 EOF
+
+# 中文/EN: Optional comma-separated disk partition allowlist; avoids bind-mount double counting.
+if [ -n "${NZ_HARD_DRIVE_PARTITION_ALLOWLIST:-}" ]; then
+  echo "hard_drive_partition_allowlist:" >> "$CONFIG_FILE"
+  IFS=',' read -ra partitions <<< "$NZ_HARD_DRIVE_PARTITION_ALLOWLIST"
+  for partition in "${partitions[@]}"; do
+    partition="${partition#"${partition%%[![:space:]]*}"}"
+    partition="${partition%"${partition##*[![:space:]]}"}"
+    if [ -n "$partition" ]; then
+      echo "  - ${partition}" >> "$CONFIG_FILE"
+    fi
+  done
+fi
 
 # 如果指定了 UUID，添加到配置文件
 if [ -n "$NZ_UUID" ]; then
@@ -50,4 +64,4 @@ cat "$CONFIG_FILE"
 echo ""
 
 # 启动 nezha-agent
-exec /opt/nezha/agent/nezha-agent -c "$CONFIG_FILE"
+exec "$AGENT_BIN" -c "$CONFIG_FILE"
